@@ -89,13 +89,20 @@ def rodarJogo():
     pixels = []
     comida_x, comida_y = gerarComida()
 
+    tecla_pressionada = None # Armazena a última tecla pressionada pelo jogador
+
     while not fimJogo:
         tela.fill(preto)
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 fimJogo = True
             elif evento.type == pygame.KEYDOWN:
-                velocidade_x, velocidade_y = selecionarVelocidade(evento.key)
+                if tecla_pressionada is None:
+                    tecla_pressionada = evento.key
+                    velocidade_x, velocidade_y = selecionarVelocidade(tecla_pressionada, velocidade_x, velocidade_y)
+                elif tecla_pressionada != evento.key:  # Evita a inversão instantânea da direção
+                    tecla_pressionada = evento.key
+                    velocidade_x, velocidade_y = selecionarVelocidade(tecla_pressionada, velocidade_x, velocidade_y)
 
         desenharComida(tamanhoQuadrado, comida_x, comida_y)
 
